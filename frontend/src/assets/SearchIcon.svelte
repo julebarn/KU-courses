@@ -4,7 +4,6 @@
     const BgColor = theme.colors.neutral[800];
     const fillHover = theme.colors.neutral[900];
     const BgColorHover = theme.colors.neutral[500];
-
 </script>
 
 <button
@@ -15,7 +14,7 @@
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
-        style="--fill: {fill}"
+        style="--fill: {fill}; --fill-hover: {fillHover}"
     >
         <path fill="none" d="M0 0h24v24H0z" />
         <path
@@ -31,6 +30,9 @@
         padding: 10%;
         transition: ease-in-out 0.2s;
     }
+    svg:hover {
+        fill: var(--fill-hover);
+    }
 
     .svg-container {
         display: flex;
@@ -38,10 +40,7 @@
         align-items: center;
         background-color: var(--bg);
         height: 100%;
-    }
-
-    svg:hover {
-        fill: var(--fill-hover);
+        aspect-ratio: 1/1;
     }
     .svg-container:hover {
         background-color: var(--bg-hover);

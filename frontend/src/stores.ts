@@ -3,8 +3,8 @@ import { browser } from "$app/environment";
 // API URL
 export function apiUrl() {
   // check NODE_ENV
-  // check that window is defined
-  if (typeof window === "undefined") {
+  // check that window is definedq
+  if (!browser) {
     return "https://disku.jniemela.dk/api";
   }
 

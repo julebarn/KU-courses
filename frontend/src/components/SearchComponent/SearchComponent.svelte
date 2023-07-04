@@ -9,6 +9,7 @@
         initialFilters,
         filtersObj,
         SearchTypes,
+        type Filters,
     } from "../../stores";
 
     let currentType: string = SearchTypes.courseTitle;
@@ -19,11 +20,18 @@
         currentType = newType;
     }
 
+    function isFilterEmpty(filters: Filters): Boolean {
+        return Object.values(filters).reduce((a, v) => a + v.length, 0) == 0;
+    }
     /**
      * Submits filters and goes to browse
      * @function submiteAndReload
      */
-    function submitAndReload(value: string): void {
+    async function submitAndReload(value: string) {
+        if (searchInput.length == 0 && isFilterEmpty($filtersObj)) {
+            return;
+        }
+
         $filters = JSON.stringify({
             ...$filtersObj,
             searches: [
@@ -34,8 +42,7 @@
                 },
             ],
         });
-        goto("/browse");
-        location.reload();
+        await goto("/browse");
     }
 
     /**
@@ -48,11 +55,7 @@
             return;
         }
 
-        if (searchInput.length > 0) {
-            submitAndReload(searchInput);
-        } else {
-            goto("/browse");
-        }
+        submitAndReload(searchInput);
     }
     /**
      * navigates to the /browse route and updates the search value.
@@ -60,11 +63,7 @@
      * @param event the event emitted by the component on click
      */
     function submitOnClick(event: MouseEvent) {
-        if (searchInput.length > 0) {
-            submitAndReload(searchInput);
-        } else {
-            goto("/browse");
-        }
+        submitAndReload(searchInput);
     }
 
     function convertExamToString(inputString: string) {
@@ -82,8 +81,8 @@
                 ? searches[searches.length - 1].search.join()
                 : "Search"}
             style="
-            --text-color: {theme.colors.brand[200]};
-            --search-bg-color: {theme.colors.neutral[800]}
+                --text-color: {theme.colors.brand[200]};
+                --search-bg-color: {theme.colors.neutral[800]}
             "
             on:keydown={submitOnKeydown}
             bind:value={searchInput}
@@ -94,10 +93,11 @@
         <button
             on:click={() => ($filters = JSON.stringify(initialFilters))}
             class="type-button"
-            style="--text-color: {theme.colors.brand[200]}; --bg-color: {theme
-                .colors.brand[800]};
-            --hover-color: {theme.colors.brand[900]}; --hover-bg: {theme.colors
-                .brand[500]}"
+            style="
+                --text-color: {theme.colors.brand[200]}; 
+                --bg-color: {theme.colors.brand[800]};
+                --hover-color: {theme.colors.brand[900]}; 
+                --hover-bg: {theme.colors.brand[500]}"
         >
             Clear filters
         </button>
@@ -105,10 +105,11 @@
             {#if type == currentType}
                 <button
                     class="type-button"
-                    style="--text-color: {theme.colors
-                        .neutral[900]}; --bg-color: {theme.colors.neutral[200]};
-                        --hover-color: {theme.colors
-                        .neutral[900]}; --hover-bg: {theme.colors.neutral[200]}"
+                    style="
+                        --text-color: {theme.colors.neutral[900]}; 
+                        --bg-color: {theme.colors.neutral[200]};
+                        --hover-color: {theme.colors.neutral[900]}; 
+                        --hover-bg: {theme.colors.neutral[200]}"
                     on:click={() => switchType(type)}
                 >
                     {convertExamToString(type)}
@@ -116,10 +117,11 @@
             {:else}
                 <button
                     class="type-button"
-                    style="--text-color: {theme.colors
-                        .neutral[200]}; --bg-color: {theme.colors.neutral[800]};
-                        --hover-color: {theme.colors
-                        .neutral[900]}; --hover-bg: {theme.colors.neutral[200]}"
+                    style="
+                        --text-color: {theme.colors.neutral[200]}; 
+                        --bg-color: {theme.colors.neutral[800]};
+                        --hover-color: {theme.colors.neutral[900]}; 
+                        --hover-bg: {theme.colors.neutral[200]}"
                     on:click={() => switchType(type)}
                 >
                     {convertExamToString(type)}
